@@ -35,12 +35,12 @@ install() {
   }
 
   ISDL=false
-  if [ ! -d "${WORK_PATH}/MailPlus-Server-${ARCH}-${VERSION}" ]; then
+  if [ ! -d "${WORK_PATH}/patch/${VERSION}/${SS_NAME}" ]; then
     REPO="${REPO:-"ohyeah521/MailPlus-Server"}"
     BRANCH="${BRANCH:-"main"}"
 
     # 检查版本是否存在
-    VERURL="https://github.com/${REPO}/tree/${BRANCH}/MailPlus-Server-${ARCH}-${VERSION}"
+    VERURL="https://github.com/${REPO}/tree/${BRANCH}/patch/${VERSION}/${SS_NAME}"
     STATUS="$(curl -s -m 10 -connect-timeout 10 -w "%{http_code}" "${VERURL}" -o /dev/null 2>/dev/null)"
     STATUS="${STATUS: -3}"
     case "${STATUS}" in
@@ -60,9 +60,9 @@ install() {
     esac
 
     # 获取 patch 文件
-    URL_FIX="https://github.com/${REPO}/raw/${BRANCH}/MailPlus-Server-${ARCH}-${VERSION}"
+    URL_FIX="https://github.com/${REPO}/raw/${BRANCH}/patch/${VERSION}/${SS_NAME}"
     for F in "${PATCH_FILES[@]}"; do
-      _get_files "${URL_FIX}/${F}" "${WORK_PATH}/MailPlus-Server-${ARCH}-${VERSION}/${F}"
+      _get_files "${URL_FIX}/${F}" "${WORK_PATH}/patch/${VERSION}/${SS_NAME}/${F}"
     done
     ISDL=true
   fi
@@ -82,13 +82,13 @@ install() {
   SS_PATH="/var/packages/MailPlus-Server/target"
   _suffix="_backup"
   for F in "${PATCH_FILES[@]}"; do
-    _process_file "${WORK_PATH}/MailPlus-Server-${ARCH}-${VERSION}/${F}" "${SS_PATH}/${F}" "${_suffix}" 0755
+    _process_file "${WORK_PATH}/patch/${VERSION}/${SS_NAME}/${F}" "${SS_PATH}/${F}" "${_suffix}" 0755
   done
 
   sleep 5
   /usr/syno/bin/synopkg start MailPlus-Server >/dev/null 2>&1
 
-  [ "${ISDL}" = true ] && rm -rf "${WORK_PATH:?}/${VERSION:?}"
+  [ "${ISDL}" = true ] && rm -rf "${WORK_PATH:?}/patch/${VERSION}/${SS_NAME}"
 }
 
 uninstall() {
@@ -149,11 +149,13 @@ fi
 
 ARCH="$(synogetkeyvalue /var/packages/MailPlus-Server/INFO arch)"
 
+SS_NAME="MailPlus-Server-${ARCH}-${VERSION}"
+
 PATCH_FILES=(
   "lib/libmailserver-license.so.1.0"
 )
 
-echo "Found MailPlus-Server-${ARCH}-${VERSION}"
+echo "Found ${SS_NAME}"
 
 case "${1}" in
 -r | --uninstall)
