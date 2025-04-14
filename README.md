@@ -17,34 +17,54 @@
 
 ---
 ### 请我喝杯咖啡
-- [PayPal](https://paypal.me/wovow)
+If this code helps and you wish to support me:
+- [PayPal: https://paypal.me/wovow](https://paypal.me/wovow)
 
-- ![License](https://raw.githubusercontent.com/ohyeah521/Surveillance-Station/main/img/buy%20me%20coffee.jpg)
+- ![License](img/buy%20me%20coffee.jpg)
+- ![License](img/eth.png)
+- - Ethereum: 0xcD3e7014164c462c07aD2700D1206Fb586388428
+-
 
 
-
-
-## [MailPlus-Server 3.3.0-21523](https://archive.synology.com/download/Package/MailPlus-Server)
-
-
+## Download [MailPlus-Server](https://archive.synology.com/download/Package/MailPlus-Server)
 
 ---
-### x86_64版本
-- [Download](https://global.synologydownload.com/download/Package/spk/MailPlus-Server/3.3.0-21523/MailPlus-Server-x86_64-3.3.0-21523.spk)
-- Script:
+### 破解授权
+- Online:
+```shell
+curl -fsSL https://raw.githubusercontent.com/ohyeah521/MailPlus-Server/main/activated.sh | bash
 ```
-bash <(curl -L https://raw.githubusercontent.com/ohyeah521/MailPlus-Server/main/MailPlus-Server-x86_64-3.3.0-21523/install_license)
+- Offline:
+```shell
+# 1. Download https://github.com/ohyeah521/MailPlus-Server/archive/refs/heads/main.zip
+# 2. Unload to your DSM system.
+unzip MailPlus-Server-main.zip
+cd MailPlus-Server-main
+chmod +x activated.sh
+./activated.sh 
 ```
- 
+
 ---
-### 恢复默认授权
-- Script:
+### 恢复授权
+- Online:
+```shell
+curl -fsSL https://raw.githubusercontent.com/ohyeah521/MailPlus-Server/main/activated.sh | bash -s -- -r
 ```
-bash <(curl -L https://raw.githubusercontent.com/ohyeah521/MailPlus-Server/main/license/remove_license)
+- Offline:
+```shell
+# 1. Download https://github.com/ohyeah521/MailPlus-Server/archive/refs/heads/main.zip
+# 2. Unload to your DSM system.
+unzip MailPlus-Server-main.zip
+cd MailPlus-Server-main
+chmod +x activated.sh
+./activated.sh -r
 ```
+
+
+
 ---
 ### 破解234授权
-![License](https://raw.githubusercontent.com/ohyeah521/MailPlus-Server/main/img/crack.png)
+![License](img/crack_license.png)
 
 
 
