@@ -36,7 +36,7 @@ curl -fsSL https://raw.githubusercontent.com/ohyeah521/MailPlus-Server/main/acti
 ```
 - Offline:
 ```shell
-# 1. Download https://github.com/ohyeah521/MailPlus-Server/archive/refs/heads/main.zip
+# 1. Download https://github.com/offsoc/MailPlus-Server/archive/refs/heads/main.zip
 # 2. Unload to your DSM system.
 unzip MailPlus-Server-main.zip
 cd MailPlus-Server-main
