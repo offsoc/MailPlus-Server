@@ -12,10 +12,11 @@ install() {
   _get_files() {
     local url="${1}" file="${2}"
     mkdir -p "$(dirname "${file}" 2>/dev/null)" 2>/dev/null
-    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -m 10 -connect-timeout 10 -w "%{http_code}" "${url}" -o "${file}")"
+    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -m 10 --connect-timeout 10 -w "%{http_code}" "${url}" -o "${file}")"
     STATUS="${STATUS: -3}"
     case "${STATUS}" in
     "000")
+      rm -rf "${file}"
       echo "Error: ${STATUS}, Failed to connect to GitHub. Please check your network and try again."
       exit 1
       ;;
@@ -59,7 +60,7 @@ install() {
 
     # 检查版本是否存在
     VERURL="${GPROXY}https://github.com/${REPO}/tree/${BRANCH}/patch/${VERSION}/${SS_NAME}"
-    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -m 10 -connect-timeout 10 -w "%{http_code}" "${VERURL}" -o /dev/null 2>/dev/null)"
+    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -m 10 --connect-timeout 10 -w "%{http_code}" "${VERURL}" -o /dev/null 2>/dev/null)"
     STATUS="${STATUS: -3}"
     case "${STATUS}" in
     "000")
