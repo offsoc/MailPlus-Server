@@ -12,30 +12,28 @@ install() {
   _get_files() {
     local url="${1}" file="${2}"
     mkdir -p "$(dirname "${file}" 2>/dev/null)" 2>/dev/null
-    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -m 10 --connect-timeout 10 -w "%{http_code}" "${url}" -o "${file}")"
+    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -w "%{http_code}" "${url}" -o "${file}")"
     STATUS="${STATUS: -3}"
     case "${STATUS}" in
     "000")
-      rm -rf "${file}"
       echo "Error: ${STATUS}, Failed to connect to GitHub. Please check your network and try again."
-      exit 1
+      return 1
       ;;
     "200")
       echo "Info: $(basename "${url}" 2>/dev/null) downloaded successfully."
+      return 0
       ;;
     "403")
-      rm -rf "${file}"
       echo "Error: ${STATUS}, Access forbidden to the package on GitHub."
-      exit 1
+      return 1
       ;;
     "404")
-      rm -rf "${file}"
       echo "Warning: $(basename "${url}" 2>/dev/null) skipped, not exist."
+      return 0
       ;;
     *)
-      rm -rf "${file}"
       echo "Error: ${STATUS}, $(basename "${url}" 2>/dev/null) failed to download."
-      exit 1
+      return 1
       ;;
     esac
   }
@@ -54,13 +52,14 @@ install() {
   }
 
   ISDL=false
+  [ ! -f "${WORK_PATH}/LICENSE" ] && [ ! -f "${WORK_PATH}/README.md" ] && rm -rf "${WORK_PATH}/patch/${VERSION}/${SS_NAME}"
   if [ ! -d "${WORK_PATH}/patch/${VERSION}/${SS_NAME}" ]; then
     REPO="${REPO:-"ohyeah521/MailPlus-Server"}"
     BRANCH="${BRANCH:-"main"}"
 
     # 检查版本是否存在
     VERURL="${GPROXY}https://github.com/${REPO}/tree/${BRANCH}/patch/${VERSION}/${SS_NAME}"
-    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -m 10 --connect-timeout 10 -w "%{http_code}" "${VERURL}" -o /dev/null 2>/dev/null)"
+    STATUS="$(curl -skL ${CPROXY:+-x ${CPROXY}} -w "%{http_code}" "${VERURL}" -o /dev/null 2>/dev/null)"
     STATUS="${STATUS: -3}"
     case "${STATUS}" in
     "000")
@@ -86,18 +85,22 @@ install() {
     URL_FIX="${GPROXY}https://github.com/${REPO}/raw/${BRANCH}/patch/${VERSION}/${SS_NAME}"
     for F in "${PATCH_FILES[@]}"; do
       _get_files "${URL_FIX}/${F}" "${WORK_PATH}/patch/${VERSION}/${SS_NAME}/${F}"
+      if [ $? -ne 0 ]; then
+        rm -rf "${WORK_PATH:?}/patch/${VERSION}/${SS_NAME}"
+        exit 1
+      fi
     done
     ISDL=true
   fi
 
-  /usr/syno/bin/synopkg stop MailPlus-Server >/dev/null 2>&1
+  /usr/syno/bin/synopkg stop MailPlus-Server
   sleep 5
 
   # 屏蔽认证服务器
   if grep -q "license.synology.com" /etc/hosts; then
-    echo "Already blocked license server: license.synology.com."
+    echo "Info: Already blocked license server: license.synology.com."
   else
-    echo "Add block license server: license.synology.com"
+    echo "Info: Add block license server: license.synology.com"
     echo "0.0.0.0 license.synology.com" | sudo tee -a /etc/hosts
   fi
 
@@ -109,7 +112,7 @@ install() {
   done
 
   sleep 5
-  /usr/syno/bin/synopkg start MailPlus-Server >/dev/null 2>&1
+  /usr/syno/bin/synopkg start MailPlus-Server
 
   [ "${ISDL}" = true ] && rm -rf "${WORK_PATH:?}/patch/${VERSION}/${SS_NAME}"
 }
@@ -127,7 +130,7 @@ uninstall() {
     fi
   }
 
-  /usr/syno/bin/synopkg stop MailPlus-Server >/dev/null 2>&1
+  /usr/syno/bin/synopkg stop MailPlus-Server
   sleep 5
 
   # 处理 patch 文件
@@ -139,14 +142,14 @@ uninstall() {
 
   # 解除屏蔽认证服务器
   if grep -q "license.synology.com" /etc/hosts; then
-    echo "Unblocking license server: license.synology.com"
+    echo "Info: Unblocking license server: license.synology.com"
     sudo sed -i '/license.synology.com/d' /etc/hosts
   else
-    echo "License server not blocked: license.synology.com."
+    echo "Info: License server not blocked: license.synology.com."
   fi
 
   sleep 5
-  /usr/syno/bin/synopkg start MailPlus-Server >/dev/null 2>&1
+  /usr/syno/bin/synopkg start MailPlus-Server
 }
 
 if [ ! "${USER}" = "root" ]; then
