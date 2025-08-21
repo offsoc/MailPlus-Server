@@ -99,7 +99,10 @@ install() {
 
   /usr/syno/bin/synopkg stop MailPlus-Server
   sleep 5
-
+  
+  # 修改许可证数量为234
+  sudo sed -i 's/\(free=\)5\([^0-9]\)/\1234\2/g' /var/packages/MailPlus-Server/target/app/mailserver.js
+  
   # 屏蔽认证服务器
   if grep -q "license.synology.com" /etc/hosts; then
     echo "Info: Already blocked license server: license.synology.com."
@@ -144,6 +147,9 @@ uninstall() {
     _process_file "${SS_PATH}/${F}" "${_suffix}" 0755
   done
 
+  # 还原许可证为5,可能不同机型默认许可不一样，这里强制改为5，也可以在安装的时候先备份，卸载的时候在还原
+  sudo sed -i 's/\(free=\)234\([^0-9]\)/\15\2/g' /var/packages/MailPlus-Server/target/app/mailserver.js
+  
   # 解除屏蔽认证服务器
   if grep -q "license.synology.com" /etc/hosts; then
     echo "Info: Unblocking license server: license.synology.com"
