@@ -25,7 +25,7 @@ If this code helps and you wish to support me:
 - - Ethereum: 0xcD3e7014164c462c07aD2700D1206Fb586388428
 -
 
-### 时间炸弹**
+### 时间炸弹
 3.4.1-21569 版本去除了一个时间炸弹，之前的版本不在修复，请升级到新版本
 
 ## Download [MailPlus-Server](https://archive.synology.com/download/Package/MailPlus-Server)
