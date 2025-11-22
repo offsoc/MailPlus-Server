@@ -100,11 +100,7 @@ install() {
   /usr/syno/bin/synopkg stop MailPlus-Server
   sleep 5
   
-  # 修改许可证数量为234
-  sudo sed -i 's/\(free=\)5\([^0-9]\)/\1234\2/g' /var/packages/MailPlus-Server/target/app/mailserver.js
 
-  # 一个可疑的
-  sudo sed -i 's/\(free:\)5\([^0-9]\)/\1234\2/g' /var/packages/MailPlus-Server/target/app/mailserver.js
   
   # 屏蔽认证服务器
   if grep -q "license.synology.com" /etc/hosts; then
