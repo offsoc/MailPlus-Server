@@ -11,6 +11,40 @@
 
 请使用者在使用本研究成果时，自觉遵守法律法规，并对自己的行为负责。
 
+
+
+
+### 注册流程分析
+只做技术分享，谢绝交流，请勿讨论
+
+先说结论：整体来说添加许可证算法实现还是很安全的
+```
+	synopki_init
+	synopki_activated
+	synopki_encrypt
+	synopki_decrypt
+	synopki_set_pk_signature
+	synopki_verify_sign_key
+	synopki_verify_sig_by_ed25519_pk
+	Z85_encode
+	Z85_decode
+```
+
+**信任链结构**
+
+```
+硬编码 Synology 公钥
+        ↓
+验证签名文件 (/usr/syno/etc/license/private/Sing.9)
+        ↓
+验证 Vault 中的对等公钥
+        ↓
+用于加密/解密和签名验证
+```  
+
+
+
+
 ---
 ### 交流群
 [Telegram Group](https://t.me/+40j656PRiB41NTI1)
@@ -25,6 +59,8 @@ If this code helps and you wish to support me:
 - - Ethereum: 0xcD3e7014164c462c07aD2700D1206Fb586388428
 -
 
+### 时间炸弹
+3.4.1-21569 版本去除了一个时间炸弹，之前的版本不在修复，请升级到新版本
 
 ## Download [MailPlus-Server](https://archive.synology.com/download/Package/MailPlus-Server)
 
